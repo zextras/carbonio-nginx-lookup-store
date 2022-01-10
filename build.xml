@@ -5,7 +5,7 @@
   <property name="dist.lib.ext.dir" location="${dist.lib.dir}/ext"/>
   <property name="jar.deploy.dir" location="${zimbra.home.dir}/lib/ext/${ext.name}"/>
 
-  <!-- zimbra.extension.class and implementation.title are used by zimbra-jar target to generate jar manifest -->
+  <!-- zimbra.extension.class and implementation.title are used by zextras-jar target to generate jar manifest -->
   <property name="zimbra.extension.class" value="com.zimbra.cs.nginx.NginxLookupExtension"/>
   <property name="implementation.title" value="Zimbra Nginx Lookup"/>
 
@@ -23,10 +23,10 @@
     </copy>
   </target>
 
-  <!-- this target uses common compile and zimbra-jar targets defined in ant-global.xml -->
-  <target name="jar" depends="compile,zimbra-jar" description="Creates the jar file" />
+  <!-- this target uses common compile and zextras-jar targets defined in ant-global.xml -->
+  <target name="jar" depends="compile,zextras-jar" description="Creates the jar file" />
 
-  <!-- this target drops nginx-lookup.jar file into /opt/zimbra/lib/ext/nginx-lookup folder and restarts mailboxd -->
+  <!-- this target drops nginx-lookup.jar file into /opt/zextras/lib/ext/nginx-lookup folder and restarts mailboxd -->
   <target name="deploy" depends="jar" description="deploy nginx lookup extension">
     <ant dir="${server.dir}" target="stop-webserver" inheritAll="false"/>
     <delete dir="${jar.deploy.dir}"/>
