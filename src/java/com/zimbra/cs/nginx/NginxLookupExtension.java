@@ -1257,28 +1257,6 @@ public class NginxLookupExtension implements ZimbraExtension {
                         return;
                     }
                 }
-                Server accountHostingServer = prov.getServerByServiceHostname(conn.host);
-                if (accountHostingServer != null) {
-                    String clusterId = accountHostingServer.getAlwaysOnClusterId();
-                    if (clusterId != null) {
-                        List<Server> servers = prov.getAllServers(Provisioning.SERVICE_MAILBOX, clusterId);
-                        Iterator<Server> iter = servers.iterator();
-                        while (iter.hasNext()) {
-                            Server s = iter.next();
-                            if (!activeServers.contains(s.getId())) {
-                                iter.remove();
-                            }
-                        }
-                        if (!servers.isEmpty()) {
-                            // choose the server randomly from the servers list.
-                            Server selectedServer = servers.get(random.nextInt(servers.size()));
-                            conn.host = selectedServer.getServiceHostname();
-                            // store this server info in zookeeper
-                            curatorManager.setData(authUserWithRealDomainName,
-                                    selectedServer.getId() + ":" + conn.host);
-                        }
-                    }
-                }
             } catch (Exception e) {
                 throw new NginxLookupException(e);
             }
