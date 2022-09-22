@@ -35,7 +35,7 @@ pipeline {
         }
         stage('Publish snapshot to maven') {
             steps {
-                mvnCmd("$BUILD_PROPERTIES_PARAMS clean deploy -Pdev")
+                mvnCmd("$BUILD_PROPERTIES_PARAMS clean deploy")
             }
         }
 
