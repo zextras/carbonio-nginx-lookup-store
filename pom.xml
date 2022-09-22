@@ -58,6 +58,12 @@
           </releases>
         </repository>
       </repositories>
+      <distributionManagement>
+        <repository>
+          <id>zextras-java-sdk</id>
+          <url>https://zextras.jfrog.io/artifactory/maven-snapshot</url>
+        </repository>
+      </distributionManagement>
     </profile>
   </profiles>
 
@@ -69,6 +75,10 @@
   </distributionManagement>
 
   <repositories>
+    <repository>
+      <id>maven</id>
+      <url>https://repo.maven.apache.org/maven2</url>
+    </repository>
     <repository>
       <id>zextras-java-sdk</id>
       <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
