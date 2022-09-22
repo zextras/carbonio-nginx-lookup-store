@@ -10,5 +10,10 @@
       <username>${artifactory_user}</username>
       <password>${artifactory_password}</password>
     </server>
+    <server>
+      <id>zextras-snapshot</id>
+      <username>${artifactory_user}</username>
+      <password>${artifactory_password}</password>
+    </server>
   </servers>
 </settings>

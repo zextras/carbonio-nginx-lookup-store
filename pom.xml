@@ -41,7 +41,7 @@
 
   <distributionManagement>
     <snapshotRepository>
-      <id>zextras-java-sdk</id>
+      <id>zextras-snapshot</id>
       <url>https://zextras.jfrog.io/artifactory/maven-snapshot</url>
     </snapshotRepository>
     <repository>
