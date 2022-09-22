@@ -35,9 +35,12 @@ pipeline {
             }
         }
         stage('Publish snapshot to maven') {
-            steps {
-                mvnCmd("deploy -Pdev")
-            }
+          when {
+            branch "devel"
+          }
+          steps {
+              mvnCmd("deploy -Pdev")
+          }
         }
 
         stage('Publish to maven') {
