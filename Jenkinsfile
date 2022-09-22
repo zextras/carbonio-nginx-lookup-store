@@ -33,6 +33,11 @@ pipeline {
               junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
             }
         }
+        stage('Publish snapshot to maven') {
+            steps {
+                mvnCmd("$BUILD_PROPERTIES_PARAMS clean deploy -Pdev")
+            }
+        }
 
         stage('Publish to maven') {
             when {
