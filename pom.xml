@@ -41,11 +41,11 @@
 
   <distributionManagement>
     <snapshotRepository>
-      <id>zextras-snapshot</id>
+      <id>artifactory</id>
       <url>https://zextras.jfrog.io/artifactory/maven-snapshot/</url>
     </snapshotRepository>
     <repository>
-      <id>zextras-java-sdk</id>
+      <id>artifactory</id>
       <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
     </repository>
   </distributionManagement>
