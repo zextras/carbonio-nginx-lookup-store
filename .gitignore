@@ -6,3 +6,4 @@ build/
 .classpath
 .idea
 build.properties
+.target
