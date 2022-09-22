@@ -1,5 +1,5 @@
 def mvnCmd(String cmd) {
-  sh 'mvn -B -s settings.xml -DskipTests=true ' + cmd
+  sh 'mvn -B -X -s settings.xml -DskipTests=true ' + cmd
 }
 
 pipeline {
