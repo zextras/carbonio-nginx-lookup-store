@@ -36,7 +36,7 @@ pipeline {
         }
         stage('Publish snapshot to maven') {
             steps {
-                mvnCmd("clean deploy")
+                mvnCmd("deploy -Pdev")
             }
         }
 
@@ -45,7 +45,7 @@ pipeline {
                 buildingTag()
             }
             steps {
-                mvnCmd("deploy")
+                mvnCmd("deploy -Pprod")
             }
         }
     }
