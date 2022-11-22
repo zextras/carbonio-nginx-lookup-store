@@ -39,7 +39,7 @@ pipeline {
             branch "devel"
           }
           steps {
-              mvnCmd("deploy -Pdev")
+              mvnCmd("deploy")
           }
         }
 
@@ -48,7 +48,7 @@ pipeline {
                 buildingTag()
             }
             steps {
-                mvnCmd("deploy -Pprod")
+                mvnCmd("deploy")
             }
         }
     }
