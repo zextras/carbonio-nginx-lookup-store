@@ -1,5 +1,5 @@
 def mvnCmd(String cmd) {
-  sh 'mvn -B -X -s settings-jenkins.xml -DskipTests=true ' + cmd
+  sh 'mvn -B -s settings-jenkins.xml ' + cmd
 }
 
 pipeline {
@@ -27,7 +27,7 @@ pipeline {
                 }
             }
         }
-        stage('Package') {
+        stage('Build with tests') {
             steps {
               mvnCmd("clean verify")
               publishCoverage adapters: [jacocoAdapter(path: '**/target/site/jacoco/jacoco.xml')], calculateDiffForChangeRequests: true, failNoReports: true
