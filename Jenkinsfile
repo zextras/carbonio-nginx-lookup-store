@@ -1,3 +1,7 @@
+def mvnCmd(String cmd) {
+  sh 'mvn -B -s settings-jenkins.xml ' + cmd
+}
+
 pipeline {
     agent {
         node {
@@ -18,27 +22,25 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
-            }
-        }
-        stage('Build') {
-            steps {
-                withCredentials([file(credentialsId: 'artifactory-jenkins-gradle-properties', variable: 'CREDENTIALS')]) {
-                    sh '''
-                        sudo apt update -y && sudo apt install -y ant-contrib
-                        cat <<EOF > build.properties
-                        debug=0
-                        is-production=1
-                        carbonio.buildinfo.version=22.8.0_ZEXTRAS_202208
-                        EOF
-                       '''
-                    sh "cat ${CREDENTIALS} | sed -E 's#\\\\#\\\\\\\\#g' >> build.properties"
-                    sh '''
-                        ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant \
-                             -propertyfile build.properties \
-                             jar
-                        '''
+                withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
+                  sh "cp ${SETTINGS_PATH} settings-jenkins.xml"
                 }
             }
+        }
+        stage('Build with tests') {
+            steps {
+              mvnCmd("clean verify")
+              publishCoverage adapters: [jacocoAdapter(path: '**/target/site/jacoco/jacoco.xml')], calculateDiffForChangeRequests: true, failNoReports: false
+              junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
+            }
+        }
+        stage('Publish snapshot to maven') {
+          when {
+            branch "devel"
+          }
+          steps {
+              mvnCmd("deploy -Pdev")
+          }
         }
 
         stage('Publish to maven') {
@@ -46,23 +48,8 @@ pipeline {
                 buildingTag()
             }
             steps {
-                withCredentials([file(credentialsId: 'artifactory-jenkins-gradle-properties', variable: 'CREDENTIALS')]) {
-                    sh '''
-                        cat <<EOF > build.properties
-                        debug=0
-                        is-production=1
-                        carbonio.buildinfo.version=22.8.0_ZEXTRAS_202208
-                        EOF
-                       '''
-                    sh "cat ${CREDENTIALS} | sed -E 's#\\\\#\\\\\\\\#g' >> build.properties"
-                    sh '''
-                        ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant \
-                             -propertyfile build.properties \
-                             publish-maven-all
-                        '''
-                }
+                mvnCmd("deploy -Pprod")
             }
         }
     }
 }
-
