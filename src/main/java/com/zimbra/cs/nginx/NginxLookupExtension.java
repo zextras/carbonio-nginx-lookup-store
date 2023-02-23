@@ -5,29 +5,6 @@
 
 package com.zimbra.cs.nginx;
 
-import java.io.IOException;
-import java.net.Inet4Address;
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.net.util.SubnetUtils;
-import org.apache.commons.net.util.SubnetUtils.SubnetInfo;
-
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.account.ProvisioningConstants;
@@ -61,9 +38,25 @@ import com.zimbra.cs.nginx.AbstractNginxLookupLdapHelper.SearchDirResult;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.service.authenticator.ClientCertAuthenticator;
 import com.zimbra.cs.zookeeper.CuratorManager;
-import com.zimbra.qa.unittest.TestNginxLookup;
-import com.zimbra.qa.unittest.TestNginxLookupExtension;
-import com.zimbra.qa.unittest.ZimbraSuite;
+import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.net.util.SubnetUtils;
+import org.apache.commons.net.util.SubnetUtils.SubnetInfo;
 
 public class NginxLookupExtension implements ZimbraExtension {
 
@@ -111,15 +104,6 @@ public class NginxLookupExtension implements ZimbraExtension {
     public void init() throws ExtensionException, ServiceException {
         ExtensionDispatcherServlet.register(this, new NginxLookupHandler());
         CacheExtension.register("reverseproxylookup", new ReverseProxyCache());
-
-        try {
-            ZimbraSuite.addTest(TestNginxLookup.class);
-            ZimbraSuite.addTest(TestNginxLookupExtension.class);
-        } catch (NoClassDefFoundError e) {
-            // Expected in production, because JUnit is not available.
-            ZimbraLog.test.debug("Unable to load TestClientUploader unit tests.", e);
-        }
-
     }
 
     @Override
