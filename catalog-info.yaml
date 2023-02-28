@@ -1,0 +1,18 @@
+# see https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component for more component conf info
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: carbonio-nginx-lookup-store
+  title: Carbonio Nginx Lookup Store
+  description: Extension that exposes an HTTP endpoint to get the Mailbox where an account resides.
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+  tags:
+    - java
+    - maven
+    - nginx
+    - carbonio-appserver
+spec:
+  type: component
+  lifecycle: production
+  owner: new-bacon-monsters
