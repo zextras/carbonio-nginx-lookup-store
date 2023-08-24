@@ -37,7 +37,6 @@ import com.zimbra.cs.ldap.ZLdapFilterFactory.FilterId;
 import com.zimbra.cs.nginx.AbstractNginxLookupLdapHelper.SearchDirResult;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.service.authenticator.ClientCertAuthenticator;
-import com.zimbra.cs.zookeeper.CuratorManager;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -1057,10 +1056,6 @@ public class NginxLookupExtension implements ZimbraExtension {
                 }
 
                 if (conn.host == null) {
-                    chooseUsingCuratorManager(conn, authUserWithRealDomainName);
-                }
-
-                if (conn.host == null) {
                     throw new NginxLookupException("mailhost not found for user: "+req.user);
                 }
                 if (conn.port == null) {
@@ -1117,7 +1112,7 @@ public class NginxLookupExtension implements ZimbraExtension {
         }
 
         /**
-         * If domain external routing is configured, then use it and do {@link sendResult}
+         * If domain external routing is configured, then use it and do {@link #sendResult}
          * otherwise throw an exception
          */
         private void useDomainExternalRoutingWhenNoUserFound(NginxLookupRequest req, ILdapContext zlc,
@@ -1219,33 +1214,6 @@ public class NginxLookupExtension implements ZimbraExtension {
                     domain.externalRouteIncludeOriginalAuthusername();
         }
 
-        /**
-         * If using a CuratorManager use that to set the host in supplied {@link ConnConfig}
-         * @param conn - The host field will be filled in if appropriate
-         */
-        private void chooseUsingCuratorManager(ConnConfig conn, String authUserWithRealDomainName)
-                throws ServiceException, NginxLookupException {
-            // get active servers
-            CuratorManager curatorManager = CuratorManager.getInstance();
-            if (curatorManager == null) {
-                return;
-            }
-            Set<String> activeServers;
-            try {
-                activeServers = curatorManager.getActiveServers();
-                String value = curatorManager.getData(authUserWithRealDomainName);
-                if (value != null) {
-                    String serverId = value.split(":")[0];
-                    if (activeServers.contains(serverId)) {
-                        conn.host = value.split(":")[1];
-                        return;
-                    }
-                }
-            } catch (Exception e) {
-                throw new NginxLookupException(e);
-            }
-        }
-
         /** get the IP address of the host name according to current IP mode
          *
          * for ipv4 mode, the first ipv4 address will be used.
@@ -1289,7 +1257,7 @@ public class NginxLookupExtension implements ZimbraExtension {
         /**
          * Send the routing information HTTP response back to the NGINX IMAP proxy
          * @param req    The HTTP request object
-         * @param mailhost    The requested mail server name
+         * @param addr
          * @param port        The requested mail server port
          * @param origAuthUser If not null, then this value is sent back to override the login
          *                     user name, (usually) with a domain suffix added
