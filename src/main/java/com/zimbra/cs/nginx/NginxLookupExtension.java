@@ -713,7 +713,7 @@ public class NginxLookupExtension implements ZimbraExtension {
             if (HTTP.equalsIgnoreCase(req.proto)) {
                 /* For HTTP, we need to qualify user based on virtual-host header */
                 if (req.serverHost != null) {
-                    ZimbraLog.nginxlookup.info("looking up domain by virtualhost name");
+                    ZimbraLog.nginxlookup.debug("looking up domain by virtualhost name");
                     Domain d = null;
                     try {
                         d = prov.get(Key.DomainBy.virtualHostname, req.serverHost);
@@ -721,7 +721,7 @@ public class NginxLookupExtension implements ZimbraExtension {
                     }
                     if (d != null) {
                         domainName = d.getName();
-                        ZimbraLog.nginxlookup.info("found domain:" + domainName + " for virtualhost:" + req.serverHost);
+                        ZimbraLog.nginxlookup.debug("found domain:" + domainName + " for virtualhost:" + req.serverHost);
                     }
                 }
             } else {
@@ -1320,7 +1320,7 @@ public class NginxLookupExtension implements ZimbraExtension {
          */
         private void sendError(HttpServletResponse resp, String msg) {
 
-            ZimbraLog.nginxlookup.info(msg);
+            ZimbraLog.nginxlookup.debug(msg);
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.addHeader(AUTH_STATUS, msg);
 

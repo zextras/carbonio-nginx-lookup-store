@@ -30,7 +30,7 @@ pipeline {
         stage('Build with tests') {
             steps {
               mvnCmd("clean verify")
-              publishCoverage adapters: [jacocoAdapter(path: '**/target/site/jacoco/jacoco.xml')], calculateDiffForChangeRequests: true, failNoReports: false
+              recordCoverage(tools: [[parser: 'JACOCO']],sourceCodeRetention: 'MODIFIED')
               junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
             }
         }
