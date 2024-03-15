@@ -5,7 +5,7 @@ def mvnCmd(String cmd) {
 pipeline {
     agent {
         node {
-            label 'carbonio-agent-v1'
+            label 'carbonio-agent-v2'
         }
     }
     environment {
@@ -28,6 +28,10 @@ pipeline {
             }
         }
         stage('Build with tests') {
+            environment {
+                JAVA_HOME='/usr/lib/jvm/java-11-openjdk-amd64'
+                JAVA_PATH='${JAVA_HOME}/bin'
+            }
             steps {
               mvnCmd("clean verify")
               recordCoverage(tools: [[parser: 'JACOCO']],sourceCodeRetention: 'MODIFIED')
