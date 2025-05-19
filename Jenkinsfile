@@ -5,7 +5,7 @@ def mvnCmd(String cmd) {
 pipeline {
     agent {
         node {
-            label 'carbonio-agent-v1'
+            label 'zextras-v1'
         }
     }
     environment {
@@ -23,24 +23,29 @@ pipeline {
             steps {
                 checkout scm
                 withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
-                  sh "cp ${SETTINGS_PATH} settings-jenkins.xml"
+                  sh 'cp $SETTINGS_PATH settings-jenkins.xml'
                 }
             }
         }
         stage('Build with tests') {
             steps {
-              mvnCmd("clean verify")
-              recordCoverage(tools: [[parser: 'JACOCO']],sourceCodeRetention: 'MODIFIED')
-              junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
+              container('jdk-17') {
+                mvnCmd("clean verify")
+                recordCoverage(tools: [[parser: 'JACOCO']],sourceCodeRetention: 'MODIFIED')
+                junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
+              }
             }
         }
-        stage('Publish snapshot to maven') {
-          when {
-            branch "devel"
-          }
-          steps {
-              mvnCmd("deploy -Pdev")
-          }
+
+        stage('Publish SNAPSHOT to maven') {
+            when {
+                branch 'devel'
+            }
+            steps {
+                container('jdk-17') {
+                    mvnCmd("deploy -Pdev")
+                }
+            }
         }
 
         stage('Publish to maven') {
@@ -48,7 +53,9 @@ pipeline {
                 buildingTag()
             }
             steps {
-                mvnCmd("deploy -Pprod")
+                container('jdk-17') {
+                    mvnCmd("deploy -Pprod")
+                }
             }
         }
     }
